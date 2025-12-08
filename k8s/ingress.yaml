@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: microservice-overview-ingress
+  namespace: microservice-overview
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    # Dla lokalnego developmentu - możesz użyć nip.io lub dodać do /etc/hosts
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: microservice-overview.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: microservice-overview
+            port:
+              number: 80
+  # Alternatywnie, możesz użyć nip.io dla automatycznego DNS
+  # - host: microservice-overview.127.0.0.1.nip.io
+  #   http:
+  #     paths:
+  #     - path: /
+  #       pathType: Prefix
+  #       backend:
+  #         service:
+  #           name: microservice-overview
+  #           port:
+  #             number: 80
+

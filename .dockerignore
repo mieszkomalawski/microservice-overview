@@ -1,0 +1,9 @@
+.git
+.gitignore
+*.md
+microservice_overview
+*.log
+.DS_Store
+.vscode
+.idea
+

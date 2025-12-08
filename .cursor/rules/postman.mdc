@@ -1,0 +1,4 @@
+---
+alwaysApply: true
+---
+zawsze gdy zmieniasz interface API to aktualizuj kolekcję postman

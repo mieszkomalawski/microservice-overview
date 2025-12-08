@@ -1,0 +1,561 @@
+{
+	"info": {
+		"_postman_id": "microservice-overview-api",
+		"name": "Microservice Overview API",
+		"description": "Kolekcja API dla aplikacji Microservice Overview - wizualizacja zależności między mikroserwisami",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Vertices (Wierzchołki)",
+			"item": [
+				{
+					"name": "Get All Vertices",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/vertices",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vertices"
+							]
+						},
+						"description": "Pobiera listę wszystkich wierzchołków (mikroserwisów)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Vertex by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/vertices/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vertices",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "user-service",
+									"description": "ID wierzchołka"
+								}
+							]
+						},
+						"description": "Pobiera wierzchołek po ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Vertex",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"user-service\",\n  \"name\": \"User Service\",\n  \"description\": \"Serwis zarządzający użytkownikami\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vertices",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vertices"
+							]
+						},
+						"description": "Tworzy nowy wierzchołek (mikroserwis)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Vertex - Payment Service",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"payment-service\",\n  \"name\": \"Payment Service\",\n  \"description\": \"Serwis obsługujący płatności\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vertices",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vertices"
+							]
+						},
+						"description": "Przykład tworzenia serwisu płatności"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Vertex - Order Service",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"order-service\",\n  \"name\": \"Order Service\",\n  \"description\": \"Serwis zarządzający zamówieniami\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vertices",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vertices"
+							]
+						},
+						"description": "Przykład tworzenia serwisu zamówień"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Vertex - Parent Service (z hierarchią)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"backend-services\",\n  \"name\": \"Backend Services\",\n  \"description\": \"Grupa serwisów backendowych\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vertices",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vertices"
+							]
+						},
+						"description": "Tworzy wierzchołek rodzica (bez parent_id = root level)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Vertex - Child Service (z parent_id)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"user-service-v2\",\n  \"name\": \"User Service V2\",\n  \"description\": \"Wersja 2 serwisu użytkowników\",\n  \"parent_id\": \"backend-services\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vertices",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vertices"
+							]
+						},
+						"description": "Tworzy wierzchołek potomny - należy najpierw utworzyć rodzica (backend-services)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Vertex - Another Child Service",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"payment-service-v2\",\n  \"name\": \"Payment Service V2\",\n  \"description\": \"Wersja 2 serwisu płatności\",\n  \"parent_id\": \"backend-services\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vertices",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vertices"
+							]
+						},
+						"description": "Kolejny wierzchołek potomny tego samego rodzica"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Vertex - Add Parent",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"User Service\",\n  \"description\": \"Serwis zarządzający użytkownikami\",\n  \"parent_id\": \"backend-services\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vertices/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vertices",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "user-service",
+									"description": "ID wierzchołka do aktualizacji"
+								}
+							]
+						},
+						"description": "Aktualizuje wierzchołek dodając parent_id (przenosi do hierarchii)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Vertex",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"User Service Updated\",\n  \"description\": \"Zaktualizowany opis serwisu użytkowników\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vertices/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vertices",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "user-service",
+									"description": "ID wierzchołka do aktualizacji"
+								}
+							]
+						},
+						"description": "Aktualizuje istniejący wierzchołek"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Vertex",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/vertices/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"vertices",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "user-service",
+									"description": "ID wierzchołka do usunięcia"
+								}
+							]
+						},
+						"description": "Usuwa wierzchołek"
+					},
+					"response": []
+				}
+			],
+			"description": "Operacje CRUD na wierzchołkach (mikroserwisach). Wierzchołki mogą zawierać w sobie inne wierzchołki (hierarchia) poprzez pole parent_id."
+		},
+		{
+			"name": "Edges (Relacje)",
+			"item": [
+				{
+					"name": "Get All Edges",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/edges",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"edges"
+							]
+						},
+						"description": "Pobiera listę wszystkich relacji między wierzchołkami"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Edge by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/edges/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"edges",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "edge-1",
+									"description": "ID relacji"
+								}
+							]
+						},
+						"description": "Pobiera relację po ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Edge",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"edge-1\",\n  \"from\": \"user-service\",\n  \"to\": \"order-service\",\n  \"type\": \"calls\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/edges",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"edges"
+							]
+						},
+						"description": "Tworzy nową relację między wierzchołkami. WAŻNE: wierzchołki 'from' i 'to' muszą istnieć i NIE mogą mieć dzieci (muszą być na najniższym poziomie hierarchii)!"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Edge - Order to Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"edge-2\",\n  \"from\": \"order-service\",\n  \"to\": \"payment-service\",\n  \"type\": \"requires\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/edges",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"edges"
+							]
+						},
+						"description": "Przykład relacji: Order Service wymaga Payment Service"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Edge - User to Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"edge-3\",\n  \"from\": \"user-service\",\n  \"to\": \"payment-service\",\n  \"type\": \"authenticates\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/edges",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"edges"
+							]
+						},
+						"description": "Przykład relacji: User Service autentykuje Payment Service"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Edge",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"from\": \"user-service\",\n  \"to\": \"order-service\",\n  \"type\": \"calls_async\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/edges/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"edges",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "edge-1",
+									"description": "ID relacji do aktualizacji"
+								}
+							]
+						},
+						"description": "Aktualizuje istniejącą relację"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Edge",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/edges/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"edges",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "edge-1",
+									"description": "ID relacji do usunięcia"
+								}
+							]
+						},
+						"description": "Usuwa relację"
+					},
+					"response": []
+				}
+			],
+			"description": "Operacje CRUD na relacjach między wierzchołkami. UWAGA: Połączenia mogą istnieć tylko między wierzchołkami najniższego poziomu (bez dzieci)!"
+		},
+		{
+			"name": "Graph (Graf)",
+			"item": [
+				{
+					"name": "Get Full Graph",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/graph",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"graph"
+							]
+						},
+						"description": "Pobiera pełny graf zawierający wszystkie wierzchołki i relacje"
+					},
+					"response": []
+				}
+			],
+			"description": "Operacje na pełnym grafie"
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
+
