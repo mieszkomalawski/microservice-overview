@@ -73,7 +73,8 @@ jobs:
           for file in k8s/*.yaml; do
             if [ -f "$file" ]; then
               echo "Validating $file"
-              kubectl apply --dry-run=client -f "$file" || exit 1
+              # Używamy --validate=false aby uniknąć próby połączenia z serwerem K8s
+              kubectl apply --dry-run=client --validate=false -f "$file" || exit 1
             fi
           done
       
