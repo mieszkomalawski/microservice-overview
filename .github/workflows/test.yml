@@ -60,6 +60,17 @@ jobs:
         with:
           version: 'latest'
       
+      - name: Install kind
+        uses: helm/kind-action@v1.9.0
+        with:
+          version: 'v0.20.0'
+      
+      - name: Create kind cluster
+        run: |
+          echo "🚀 Creating kind cluster..."
+          kind create cluster --name test-cluster --wait 5m
+          kubectl cluster-info --context kind-test-cluster
+      
       - name: Install kube-score
         run: |
           wget -q https://github.com/zegl/kube-score/releases/download/v1.18.0/kube-score_1.18.0_linux_amd64.tar.gz
@@ -67,14 +78,15 @@ jobs:
           sudo mv kube-score /usr/local/bin
           kube-score version
       
-      - name: Validate with kubectl (primary validation)
+      - name: Validate with kubectl (full server validation)
         run: |
-          echo "🔍 Validating Kubernetes manifests with kubectl..."
+          echo "🔍 Validating Kubernetes manifests with kubectl against real cluster..."
+          kubectl config use-context kind-test-cluster
           for file in k8s/*.yaml; do
             if [ -f "$file" ]; then
               echo "Validating $file"
-              # Używamy --validate=false aby uniknąć próby połączenia z serwerem K8s
-              kubectl apply --dry-run=client --validate=false -f "$file" || exit 1
+              # Teraz możemy użyć pełnej walidacji z serwerem K8s
+              kubectl apply --dry-run=server -f "$file" || exit 1
             fi
           done
       
@@ -100,4 +112,10 @@ jobs:
         with:
           name: kube-score-report
           path: kube-score-report.txt
+      
+      - name: Cleanup kind cluster
+        if: always()
+        run: |
+          echo "🧹 Cleaning up kind cluster..."
+          kind delete cluster --name test-cluster || true
 
