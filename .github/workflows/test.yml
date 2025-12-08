@@ -82,8 +82,16 @@ jobs:
         run: |
           echo "🔍 Validating Kubernetes manifests with kubectl against real cluster..."
           kubectl config use-context kind-test-cluster
+          
+          # Najpierw utwórz namespace jeśli istnieje plik namespace.yaml
+          if [ -f "k8s/namespace.yaml" ]; then
+            echo "Creating namespace from k8s/namespace.yaml"
+            kubectl apply -f k8s/namespace.yaml
+          fi
+          
+          # Waliduj wszystkie pliki (namespace już istnieje)
           for file in k8s/*.yaml; do
-            if [ -f "$file" ]; then
+            if [ -f "$file" ] && [ "$(basename "$file")" != "namespace.yaml" ]; then
               echo "Validating $file"
               # Teraz możemy użyć pełnej walidacji z serwerem K8s
               kubectl apply --dry-run=server -f "$file" || exit 1
