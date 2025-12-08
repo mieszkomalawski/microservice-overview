@@ -60,13 +60,6 @@ jobs:
         with:
           version: 'latest'
       
-      - name: Install kubeval
-        run: |
-          wget -q https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz
-          tar xf kubeval-linux-amd64.tar.gz
-          sudo mv kubeval /usr/local/bin
-          kubeval --version
-      
       - name: Install kube-score
         run: |
           wget -q https://github.com/zegl/kube-score/releases/download/v1.18.0/kube-score_1.18.0_linux_amd64.tar.gz
@@ -74,17 +67,7 @@ jobs:
           sudo mv kube-score /usr/local/bin
           kube-score version
       
-      - name: Validate Kubernetes manifests with kubeval
-        run: |
-          echo "🔍 Validating Kubernetes manifests with kubeval..."
-          for file in k8s/*.yaml; do
-            if [ -f "$file" ]; then
-              echo "Validating $file"
-              kubeval --strict "$file" || exit 1
-            fi
-          done
-      
-      - name: Validate with kubectl
+      - name: Validate with kubectl (primary validation)
         run: |
           echo "🔍 Validating Kubernetes manifests with kubectl..."
           for file in k8s/*.yaml; do
