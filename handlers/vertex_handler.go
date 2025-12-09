@@ -99,3 +99,4 @@ func (h *VertexHandler) DeleteVertex(c *gin.Context) {
 }
 
 
+

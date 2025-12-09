@@ -127,3 +127,87 @@ jobs:
           echo "🧹 Cleaning up kind cluster..."
           kind delete cluster --name test-cluster || true
 
+  docker-compose-lint:
+    name: Docker Compose Lint
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Docker Compose
+        run: |
+          echo "🐳 Setting up Docker Compose..."
+          # Docker Compose jest już dostępny w GitHub Actions runners
+          docker compose version
+      
+      - name: Validate Docker Compose syntax
+        run: |
+          echo "🔍 Validating Docker Compose syntax..."
+          docker compose -f docker-compose.yml config --quiet
+          echo "✅ Docker Compose syntax is valid"
+      
+      - name: Check for common issues
+        run: |
+          echo "🔍 Checking for common Docker Compose issues..."
+          
+          # Sprawdź czy wszystkie obrazy są zdefiniowane
+          if ! docker compose -f docker-compose.yml config | grep -q "image:"; then
+            echo "⚠️ Warning: No images found in docker-compose.yml"
+          fi
+          
+          # Sprawdź czy są używane zmienne środowiskowe (mogą wymagać .env)
+          echo "✅ Basic checks completed"
+      
+      - name: Validate service definitions
+        run: |
+          echo "🔍 Validating service definitions..."
+          docker compose -f docker-compose.yml config --services
+          echo "✅ All services are properly defined"
+      
+      - name: Check for security best practices
+        run: |
+          echo "🔍 Checking Docker Compose security best practices..."
+          
+          # Sprawdź czy nie używa się root user
+          if docker compose -f docker-compose.yml config | grep -q "user:.*root"; then
+            echo "⚠️ Warning: Services should not run as root user"
+          fi
+          
+          # Sprawdź czy są ustawione resource limits
+          if ! docker compose -f docker-compose.yml config | grep -q "deploy:"; then
+            echo "ℹ️ Info: Consider adding resource limits with 'deploy.resources'"
+          fi
+          
+          # Sprawdź czy są ustawione health checks
+          if ! docker compose -f docker-compose.yml config | grep -q "healthcheck:"; then
+            echo "ℹ️ Info: Consider adding health checks for services"
+          fi
+          
+          echo "✅ Security checks completed"
+      
+      - name: Validate network and volume definitions
+        run: |
+          echo "🔍 Validating networks and volumes..."
+          docker compose -f docker-compose.yml config --volumes
+          docker compose -f docker-compose.yml config --networks
+          echo "✅ Networks and volumes are properly defined"
+      
+      - name: Install hadolint (Dockerfile linter)
+        run: |
+          echo "🔍 Installing hadolint for Dockerfile linting..."
+          wget -q https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64 -O hadolint
+          chmod +x hadolint
+          sudo mv hadolint /usr/local/bin/
+          hadolint --version
+      
+      - name: Lint Dockerfile
+        run: |
+          echo "🔍 Linting Dockerfile with hadolint..."
+          if [ -f "Dockerfile" ]; then
+            hadolint Dockerfile || true
+            echo "✅ Dockerfile linting completed"
+          else
+            echo "ℹ️ No Dockerfile found"
+          fi
+

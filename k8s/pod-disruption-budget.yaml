@@ -1,0 +1,11 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: microservice-overview-pdb
+  namespace: microservice-overview
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: microservice-overview
+

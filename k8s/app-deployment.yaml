@@ -6,7 +6,7 @@ metadata:
   labels:
     app: microservice-overview
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: microservice-overview
@@ -15,13 +15,41 @@ spec:
       labels:
         app: microservice-overview
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - microservice-overview
+              topologyKey: kubernetes.io/hostname
       containers:
       - name: app
-        image: microservice-overview:latest
-        imagePullPolicy: IfNotPresent
+        image: microservice-overview:v1.0.0
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
           name: http
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: var-run
+          mountPath: /var/run
         env:
         - name: DB_HOST
           valueFrom:
@@ -53,23 +81,30 @@ spec:
             configMapKeyRef:
               name: app-config
               key: DEV_MODE
-        livenessProbe:
-          httpGet:
-            path: /api/graph
-            port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 10
+        # Readiness probe - sprawdza czy aplikacja jest gotowa do przyjmowania ruchu
+        # Usuwamy liveness probe zgodnie z best practices - readiness probe jest wystarczające
+        # i unika niepotrzebnych restartów
         readinessProbe:
           httpGet:
             path: /api/graph
             port: 8080
           initialDelaySeconds: 10
           periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+          successThreshold: 1
         resources:
           requests:
             memory: "64Mi"
             cpu: "100m"
+            ephemeral-storage: "128Mi"
           limits:
             memory: "256Mi"
             cpu: "500m"
+            ephemeral-storage: "512Mi"
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      - name: var-run
+        emptyDir: {}
 
